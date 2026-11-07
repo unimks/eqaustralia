@@ -17,13 +17,13 @@ export function Header({ route }: { route: string }) {
       <div className="hd__in wrap">
         <a className="hd__mark" href="#/">EQ Australia</a>
         <nav className="hd__nav" aria-label="Menu">
-          {c.nav.map(([l, h]) => <a key={h} href={h} aria-current={route === h ? 'page' : undefined}>{l}</a>)}
+          {c.nav.map(([l, h]) => <a key={h} href={h} aria-current={route === h || (h !== '#/' && route.startsWith(h + '/')) ? 'page' : undefined}>{l}</a>)}
         </nav>
         <button className="hd__lang" type="button" onClick={() => setLang(lang === 'en' ? 'ko' : 'en')} lang={lang === 'en' ? 'ko' : 'en'}>{c.langLabel}</button>
         <a className="hd__cta" href="#/contact">{c.enquire}</a>
       </div>
       <nav className="hd__strip" aria-label="Menu">
-        {c.nav.map(([l, h]) => <a key={h} href={h} aria-current={route === h ? 'page' : undefined}>{l}</a>)}
+        {c.nav.map(([l, h]) => <a key={h} href={h} aria-current={route === h || (h !== '#/' && route.startsWith(h + '/')) ? 'page' : undefined}>{l}</a>)}
       </nav>
     </header>
   );

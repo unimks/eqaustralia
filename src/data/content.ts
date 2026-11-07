@@ -40,14 +40,8 @@ const en = {
     ],
   },
   programs: {
-    h: [['Study tours,', 'built for your group']] as L,
-    lead: 'Sample programmes. Every itinerary is drafted from your goals, not picked from a catalogue.',
-    list: [
-      { k: 'School visit week', len: '3–5 days', d: 'Buddy classes and lessons at a Perth school, with excursions arranged around the school day.' },
-      { k: 'Campus and careers', len: '1–3 days', d: 'University campus visits and short courses through the universities’ own study-tour teams.' },
-      { k: 'English and culture', len: '1–2 weeks', d: 'Morning English sessions, afternoon activities across Perth and Fremantle.' },
-      { k: 'Nature and science', len: '1–3 days', d: 'Field days to the Pinnacles, Rottnest Island and Kings Park bushland.' },
-    ],
+    h: [['Study tours', 'from Korea to Perth']] as L,
+    lead: 'Two flagship programmes from Korea: an eight-day exchange for primary students and a ten-day programme for teachers. Each one is adjusted to your group’s goals.',
     note: 'Public schools in WA host visits from half a day up to four weeks, with the principal’s approval.',
   },
   services: {
@@ -160,14 +154,8 @@ const ko: typeof en = {
     ],
   },
   programs: {
-    h: [['스터디투어,', '단체에 맞춰 짭니다']],
-    lead: '아래는 예시 프로그램입니다. 일정은 목록에서 고르지 않고 여러분의 목표에서 출발해 짭니다.',
-    list: [
-      { k: '학교 방문 주간', len: '3–5일', d: '퍼스 학교에서 버디 수업·수업 참관, 학교 시간에 맞춘 견학.' },
-      { k: '캠퍼스와 진로', len: '1–3일', d: '대학 캠퍼스 방문과 단기 과정 — 각 대학 스터디투어 팀을 통해.' },
-      { k: '영어와 문화', len: '1–2주', d: '오전 영어 수업, 오후 퍼스·프리맨틀 체험.' },
-      { k: '자연과 과학', len: '1–3일', d: '피너클스·로트네스트섬·킹스파크 숲 현장 학습.' },
-    ],
+    h: [['한국에서 퍼스로,', '스터디투어']],
+    lead: '한국에서 오는 두 가지 대표 프로그램입니다. 초등학생 8일 국제교육교류와 교사 10일 연수. 단체의 목표에 맞춰 다시 짭니다.',
     note: '서호주 공립학교는 교장 승인 아래 반나절부터 최대 4주까지 방문을 받습니다.',
   },
   services: {

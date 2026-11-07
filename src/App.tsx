@@ -5,10 +5,11 @@ import { BgStage, type Scene } from './fx/BgStage';
 import { useLenis } from './lib/useLenis';
 import { useInView } from './lib/fx';
 import { LangCtx, initialLang, saveLang, useC } from './lib/i18n';
-import { content, credits, type Lang } from './data/content';
+import { content, credits, type Lang, type L } from './data/content';
 import { facts } from './data/facts';
 import { Intro } from './sections/Intro';
 import { Hero, PageHead, What, Who, Flow, Programs, Services, Safety, Group, Perth, Faq, Contact } from './sections/Sections';
+import { TourHead, TourValues, TourDays, TourExtra, TourSupport } from './sections/Tour';
 import './sections/site.css';
 
 // 배경 장면 = 스터디투어 하루 순서: 공항 도착 → 도시 → 캠퍼스 → 강 → 교실 → 대학 → 학교 → 차량 → 피너클스 → 킹스파크 → 퍼스 야경.
@@ -27,16 +28,29 @@ const SCENES: Record<string, Scene> = {
   faq: { key: 'faq', img: S('p_kingspark'), tone: 'day' },
   contact: { key: 'contact', img: S('p_jetty') },
   phead: { key: 'phead', img: S('p_quay') },
+  // 대표 프로그램 — 대표 제공 사진(제안서 Links)
+  'students-head': { key: 'students-head', img: S('t_kangaroo') },
+  'students-values': { key: 'students-values', img: S('t_rottnest') },
+  'students-days': { key: 'students-days', img: S('p_swan') },
+  'students-extra': { key: 'students-extra', img: S('t_train') },
+  'students-support': { key: 'students-support', img: S('p_coaster') },
+  'teachers-head': { key: 'teachers-head', img: S('t_pinnacles') },
+  'teachers-values': { key: 'teachers-values', img: S('t_boab') },
+  'teachers-days': { key: 'teachers-days', img: S('p_swan') },
+  'teachers-extra': { key: 'teachers-extra', img: S('t_bridge') },
+  'teachers-support': { key: 'teachers-support', img: S('p_coaster') },
 };
 
 // 메뉴 5개(대표 지정) — 홈은 11섹션 전부, 나머지는 해당 섹션만
-type Route = '#/' | '#/about' | '#/study-tours' | '#/services' | '#/contact';
+type Route = '#/' | '#/about' | '#/study-tours' | '#/study-tours/students' | '#/study-tours/teachers' | '#/services' | '#/contact';
 const ROUTES: Record<Route, string[]> = {
   '#/': ['hero', 'what', 'who', 'flow', 'programs', 'services', 'safety', 'group', 'perth', 'faq', 'contact'],
   '#/about': ['phead', 'what', 'group', 'perth', 'contact'],
   '#/study-tours': ['phead', 'flow', 'programs', 'safety', 'contact'],
   '#/services': ['phead', 'services', 'who', 'faq', 'contact'],
   '#/contact': ['phead', 'contact', 'faq'],
+  '#/study-tours/students': ['students-head', 'students-values', 'students-days', 'students-extra', 'students-support', 'contact'],
+  '#/study-tours/teachers': ['teachers-head', 'teachers-values', 'teachers-days', 'teachers-extra', 'teachers-support', 'contact'],
 };
 const readRoute = (): Route => (location.hash in ROUTES ? (location.hash as Route) : '#/');
 
@@ -44,12 +58,19 @@ function Page({ route }: { route: Route }) {
   useLenis();
   useInView();
   const { c } = useC();
-  const title = { '#/about': c.pages.about, '#/study-tours': c.pages.tours, '#/services': c.pages.services, '#/contact': c.pages.contact }[route as Exclude<Route, '#/'>];
+  const title = ({ '#/about': c.pages.about, '#/study-tours': c.pages.tours, '#/services': c.pages.services, '#/contact': c.pages.contact } as Record<string, L | undefined>)[route];
   const keys = ROUTES[route];
   const parts: Record<string, ReactNode> = {
     hero: <Hero />, phead: title ? <PageHead l={title} bg="phead" /> : null, what: <What />, who: <Who />, flow: <Flow />, programs: <Programs />,
     services: <Services />, safety: <Safety />, group: <Group />, perth: <Perth />, faq: <Faq />, contact: <Contact />,
   };
+  for (const t of ['students', 'teachers'] as const) {
+    parts[`${t}-head`] = <TourHead slug={t} />;
+    parts[`${t}-values`] = <TourValues slug={t} />;
+    parts[`${t}-days`] = <TourDays slug={t} />;
+    parts[`${t}-extra`] = <TourExtra slug={t} />;
+    parts[`${t}-support`] = <TourSupport slug={t} />;
+  }
   return (
     <>
       <BgStage scenes={keys.map((k) => SCENES[k])} />

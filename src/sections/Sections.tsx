@@ -6,7 +6,9 @@ import { facts } from '../data/facts';
 import { useC } from '../lib/i18n';
 import { useScrub, wordFill } from '../lib/scrub';
 import { Count } from '../lib/fx';
+import { reduced } from '../lib/gsap';
 import { heroStage, scatter } from './heroTimeline';
+import { TourCards } from './Tour';
 
 const v = (o: Record<string, number | string>) => o as CSSProperties;
 const telHref = `tel:${facts.phone.value.replace(/\s/g, '')}`;
@@ -98,36 +100,50 @@ export function Who() {
   );
 }
 
-/* 4. 진행 순서(고정) — 여섯 단계가 차례로 밝아지고 왼쪽 선이 차오름(대표). */
+/* 4. 진행 순서(고정) — 스크롤하면 비행기가 항로를 따라 날고, 여섯 단계가 가로로 흘러가며 바뀜. */
 export function Flow() {
   const { c } = useC();
   const ref = useRef<HTMLElement>(null);
   const n = c.flow.steps.length;
   useScrub(ref, (p, el) => {
+    const x = Math.min(1, Math.max(0, p)) * (n - 1);
     el.style.setProperty('--fp', p.toFixed(3));
-    el.querySelectorAll<HTMLElement>('.flow__s').forEach((s, i) => s.style.setProperty('--on', wordFill(p, i, n, 1.2).toFixed(3)));
-  }, matchMedia('(min-height: 720px)').matches ? { pin: true, end: '+=220%', still: 1 } : { start: 'top 75%', end: 'bottom 60%', still: 1 });
+    el.style.setProperty('--x', x.toFixed(3));
+    el.querySelectorAll<HTMLElement>('.flow__s').forEach((s, i) => s.style.setProperty('--on', Math.max(0, 1 - Math.abs(x - i)).toFixed(3)));
+    el.querySelectorAll<HTMLElement>('.flow__dot').forEach((d, i) => d.style.setProperty('--on', Math.min(1, Math.max(0, x - i + 1)).toFixed(3)));
+  }, matchMedia('(min-height: 720px)').matches ? { pin: true, end: '+=260%', still: 1 } : { start: 'top 75%', end: 'bottom 60%', still: 1 });
   return (
-    <section id="flow" className="sec flow" data-bg="flow" ref={ref} data-fx="여섯단계스크럽,진행선차오름,글자밝아짐,점커짐,강빛느린줌">
+    <section id="flow" className={`sec flow${reduced() ? ' flow--list' : ''}`} data-bg="flow" ref={ref} style={v({ '--n': n })} data-fx="가로비행전환,항로진행선,비행기이동,단계점켜짐,강빛느린줌">
       <div className="wrap flow__in">
         <h2 className="flow__h"><Lines l={c.flow.h} /></h2>
         <div className="flow__body">
-          <i className="flow__bar" aria-hidden><b /></i>
-          <ol className="flow__steps">
-            {c.flow.steps.map((s) => (
-              <li key={s.k} className="flow__s">
-                <h3>{s.k}</h3>
-                <p><Sents s={s.d} /></p>
-              </li>
+          <div className="flow__route" aria-hidden>
+            <i className="flow__bar"><b /></i>
+            {c.flow.steps.map((s, i) => (
+              <span key={s.k} className="flow__dot" style={v({ '--i': i })}><u>{s.k}</u></span>
             ))}
-          </ol>
+            <svg className="flow__plane" viewBox="0 0 64 64" width="44" height="44" focusable="false">
+              <path d="M62 32 40 24 26 4h-6l6 20-14 3-6-7H2l3 12-3 12h4l6-7 14 3-6 20h6l14-20 22-8z" fill="currentColor" />
+            </svg>
+          </div>
+          <div className="flow__view">
+            <ol className="flow__steps">
+              {c.flow.steps.map((s, i) => (
+                <li key={s.k} className="flow__s">
+                  <span className="flow__no">{String(i + 1).padStart(2, '0')}</span>
+                  <h3>{s.k}</h3>
+                  <p><Sents s={s.d} /></p>
+                </li>
+              ))}
+            </ol>
+          </div>
         </div>
       </div>
     </section>
   );
 }
 
-/* 5. 프로그램 예시 — 기간이 타자처럼 찍히고 행이 차례로(대표: 타자). 인디고 교실 영상. */
+/* 5. 대표 프로그램 — 학생 8일·교사 10일 카드 두 장(대표 제안서). 인디고 교실 영상. */
 export function Programs() {
   const { c } = useC();
   return (
@@ -137,15 +153,7 @@ export function Programs() {
           <h2 data-io className="fade-lines"><Lines l={c.programs.h} /></h2>
           <p className="lead" data-io><Sents s={c.programs.lead} /></p>
         </div>
-        <ul className="rows">
-          {c.programs.list.map((x, i) => (
-            <li key={x.k} data-io style={v({ '--i': i })}>
-              <h3>{keep(x.k)}</h3>
-              <p className="rows__len"><span className="type" style={v({ '--n': x.len.length, '--i': i })}>{keep(x.len)}</span></p>
-              <p className="rows__d"><Sents s={x.d} /></p>
-            </li>
-          ))}
-        </ul>
+        <TourCards />
         <p className="lead programs__note" data-io><Sents s={c.programs.note} /></p>
         <Source facts={[facts.programLength, facts.uwa, facts.curtin]} />
       </div>
